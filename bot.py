@@ -2,15 +2,16 @@ import discord
 import asyncio
 import re
 import json
+from player_stats import PlayerStats
 
 client = discord.Client()
 
 @client.event
 async def on_ready():
-    print('Logged in as')
-    print(client.user.name)
+    print('Logged in as {}'.format(client.user.name))
     print(client.user.id)
     print('------')
+    # await client.send_message(message.channel, 'Hello. Hello. Hello')
 
 @client.event
 async def on_message(message):
@@ -26,7 +27,15 @@ async def on_message(message):
     elif message.content.startswith('!end'):
         await client.send_message(message.channel, 'Shutting Down')
         await client.logout()
+    elif message.content.startswith('!stats'):
+        m = re.match('!stats (.+)$', message.content)
+        if m:
+            stats = player_stats.get_player_summary(m.group(1))
+            await client.send_message(message.channel, stats)
+        else:
+            await client.send_message(message.channel, 'Invalid command: {}'.format(message, content))
 
 config = json.loads(open('./config.json').read())
+player_stats = PlayerStats(config['RiotApiKey'])
 
-client.run(config['token'])
+client.run(config['DiscordToken'])
