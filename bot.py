@@ -15,6 +15,9 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    async def error_message():
+        await client.send_message(message.channel, 'Invalid command: {}'.format(message.content))
+
     if message.content.startswith('!'):
         print(message.content)
     if message.content.startswith('!echo'):
@@ -23,7 +26,7 @@ async def on_message(message):
             await asyncio.sleep(min(10, int(m.group(1))))
             await client.send_message(message.channel, m.group(2))
         else:
-            await client.send_message(message.channel, 'Invalid command: {}'.format(message, content))
+            await error_message()
     elif message.content.startswith('!end'):
         await client.send_message(message.channel, 'Shutting Down')
         await client.logout()
@@ -33,7 +36,7 @@ async def on_message(message):
             stats = player_stats.get_player_summary(m.group(1))
             await client.send_message(message.channel, stats)
         else:
-            await client.send_message(message.channel, 'Invalid command: {}'.format(message, content))
+            await error_message()
 
 config = json.loads(open('./config.json').read())
 player_stats = PlayerStats(config['RiotApiKey'])
