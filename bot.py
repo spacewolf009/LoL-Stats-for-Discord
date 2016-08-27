@@ -16,7 +16,7 @@ async def on_ready():
 @client.event
 async def on_message(message):
     async def error_message():
-        await client.send_message(message.channel, 'Invalid command: {}'.format(message.content))
+        await client.send_message(message.channel, ':middle_finger: Invalid command: {} :middle_finger:'.format(message.content))
 
     if not message.content.startswith('!'):
         return
@@ -46,6 +46,8 @@ async def on_message(message):
             await client.send_message(message.channel, current)
         else:
             await error_message()
+    else:
+        await error_message()
 
 config = json.loads(open('./config.json').read())
 player_stats = PlayerStats(config['RiotApiKey'])
