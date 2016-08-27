@@ -3,8 +3,13 @@ import asyncio
 import re
 import json
 from player_stats import PlayerStats
+from magic8ball import Magic8Ball
 
 client = discord.Client()
+
+USE_TTS = False
+
+ball = Magic8Ball()
 
 @client.event
 async def on_ready():
@@ -36,7 +41,7 @@ async def on_message(message):
         m = re.match('!stats (.+)$', message.content)
         if m:
             stats = player_stats.get_player_summary(m.group(1).replace(' ', ''))
-            await client.send_message(message.channel, stats)
+            await client.send_message(message.channel, stats, tts=USE_TTS)
         else:
             await error_message()
     elif message.content.startswith('!game'):
@@ -46,6 +51,10 @@ async def on_message(message):
             await client.send_message(message.channel, current)
         else:
             await error_message()
+    elif message.content.startswith('!ask'):
+        await client.send_message(message.channel, ball.ask(), tts=USE_TTS)
+    elif message.content.startswith('!speak'):
+        USE_TTS = not USE_TTS
     else:
         await error_message()
 
