@@ -20,6 +20,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    global USE_TTS
     async def error_message():
         await client.send_message(message.channel, ':middle_finger: Invalid command: {} :middle_finger:'.format(message.content))
 
