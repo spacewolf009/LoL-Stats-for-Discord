@@ -1,5 +1,6 @@
 from urllib.error import HTTPError
 from functools import reduce
+from lol_data.data import DataProvider
 
 BLUE_SIDE, PURPLE_SIDE = 100, 200
 
@@ -59,3 +60,12 @@ class PlayerStats:
             else:
                 print(e)
                 return 'An error occured getting current game data for {}'.format(summoner_name)
+
+def register(global_config):
+    player_stats = PlayerStats(DataProvider(global_config['RiotApiKey']))
+
+    return {
+        '!stats': ('', lambda msg: player_stats.get_player_summary(msg.replace(' ', ''))),
+        '!game': ('', lambda msg: player_stats.get_current_match(msg.replace(' ', '')))
+        # '!lg: ('')'
+    }
