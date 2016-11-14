@@ -24,8 +24,12 @@ class Magic8Ball:
         'Very doubtful'
     ]
 
-    def ask(self):
+    def ask(self, *_):
         return choice(Magic8Ball.responses)
+
+def register(global_config):
+    # ball = Magic8Ball()
+    return {'!ask': ('Ask the magic 8-ball a question.', Magic8Ball().ask)}
 
 if __name__ == '__main__':
     ball = Magic8Ball()
