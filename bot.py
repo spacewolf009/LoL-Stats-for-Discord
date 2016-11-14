@@ -4,6 +4,7 @@ import re
 import json
 from player_stats import PlayerStats
 from magic8ball import Magic8Ball
+from lol_data.data import DataProvider
 
 client = discord.Client()
 
@@ -26,40 +27,43 @@ async def on_message(message):
 
     if not message.content.startswith('!'):
         return
-    print(message.content)
 
-    if message.content.startswith('!echo'):
-        m = re.match('!echo (\d+) (.*)', message.content)
+    msg = message.content.strip()
+    print(msg)
+
+    if msg.startswith('!echo'):
+        m = re.match('!echo (\d+) (.*)', msg)
         if m:
             await asyncio.sleep(min(10, int(m.group(1))))
             await client.send_message(message.channel, m.group(2))
         else:
             await error_message()
-    elif message.content.startswith('!end'):
+    elif msg.startswith('!end'):
         await client.send_message(message.channel, 'Shutting Down')
         await client.logout()
-    elif message.content.startswith('!stats'):
-        m = re.match('!stats (.+)$', message.content)
+    elif msg.startswith('!stats'):
+        m = re.match('!stats (.+)$', msg)
         if m:
             stats = player_stats.get_player_summary(m.group(1).replace(' ', ''))
             await client.send_message(message.channel, stats, tts=USE_TTS)
         else:
             await error_message()
-    elif message.content.startswith('!game'):
-        m = re.match('!game (.+)$', message.content)
+    elif msg.startswith('!game'):
+        m = re.match('!game (.+)$', msg)
         if m:
             current = player_stats.get_current_match(m.group(1).replace(' ', ''))
             await client.send_message(message.channel, current)
         else:
             await error_message()
-    elif message.content.startswith('!ask'):
+    elif msg.startswith('!ask') and msg.endswith('?'):
         await client.send_message(message.channel, ball.ask(), tts=USE_TTS)
-    elif message.content.startswith('!speak'):
+    elif msg.startswith('!speak'):
         USE_TTS = not USE_TTS
     else:
         await error_message()
 
 config = json.loads(open('./config.json').read())
-player_stats = PlayerStats(config['RiotApiKey'])
+provider = DataProvider(config['RiotApiKey'])
+player_stats = PlayerStats(provider)
 
 client.run(config['DiscordToken'])

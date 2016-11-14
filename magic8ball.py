@@ -28,5 +28,5 @@ class Magic8Ball:
         return choice(Magic8Ball.responses)
 
 if __name__ == '__main__':
-  ball = Magic8Ball()
-  print(ball.ask())
+    ball = Magic8Ball()
+    print(ball.ask())

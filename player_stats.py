@@ -4,8 +4,8 @@ from functools import reduce
 BLUE_SIDE, PURPLE_SIDE = 100, 200
 
 class PlayerStats:
-    def __init__(self, api_key, provider):
-        self.api_key = api_key
+    def __init__(self, provider):
+        # self.api_key = api_key
         self.provider = provider
 
     def get_player_summary(self, summoner_name):
