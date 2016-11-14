@@ -2,8 +2,8 @@ import discord
 import asyncio
 import re
 import json
-from player_stats import PlayerStats
 import magic8ball
+from player_stats import PlayerStats
 from lol_data.data import DataProvider
 
 client = discord.Client()
@@ -15,11 +15,11 @@ async def on_ready():
     print('Logged in as {}'.format(client.user.name))
     print(client.user.id)
     print('------')
-    # await client.send_message(message.channel, 'Hello. Hello. Hello')
 
-async def shutdown(*_):
+def shutdown(*_):
     global client
-    await client.logout()
+    # await client.logout()
+    return asyncio.get_event_loop().run_until_complete(client.logout())
 
 bot_commands = {
     # '!ask': (''),
@@ -47,7 +47,7 @@ async def on_message(message):
     cmd = msg.split(' ')[0]
     if cmd in bot_commands:
         try:
-            response = await bot_commands[cmd][1](msg[len(cmd):])
+            response = bot_commands[cmd][1](msg[len(cmd):])
             if isinstance(response, str) and len(response) > 0:
                 await client.send_message(message.channel, response)
         except Exception as e:
